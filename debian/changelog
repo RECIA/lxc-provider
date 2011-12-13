@@ -1,6 +1,6 @@
 lxc-provider (0.4.1beta~recia) unstable; urgency=low
 
- * Add LVM Patch
+  * Add LVM Patch
 
  -- Stéphane GAUTIER <stephane@esco-lan.org>  Tue, 13 Dec 2011 12:47:28 +0100
 
