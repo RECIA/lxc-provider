@@ -445,6 +445,7 @@ p_Create() {
 			[[ $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]] && die "LVM logical volume ${lxc_CONTAINER_NAME}.img already exists"
 
 			lvcreate -L 1G -n ${lxc_CONTAINER_NAME}.img VolGroup00
+			sleep 1
 			mkfs.ext4 -m 1 /dev/VolGroup00/${lxc_CONTAINER_NAME}.img
 			mount /dev/VolGroup00/${lxc_CONTAINER_NAME}.img "${lxc_TMP_ROOTFS}"
 		fi
