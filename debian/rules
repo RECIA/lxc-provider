@@ -3,6 +3,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+build:
+
 clean:
 	rm -rf debian/lxc-provider test/
 	rm -f debian/lxc-provider.debhelper.log debian/lxc-provider.substvars debian/files
@@ -10,9 +12,7 @@ clean:
 install:
 	$(MAKE) install root=debian/lxc-provider
 
-binary-indep: install
-
-binary-arch: install
+binary: install
 	dh_testdir
 	dh_testroot
 	dh_installdocs -n
