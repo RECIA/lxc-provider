@@ -439,6 +439,16 @@ p_Create() {
         fi
 
         mkdir -p "${lxc_TMP_ROOTFS}" && log "${lxc_TMP_ROOTFS} created"
+
+		# create LV then mount it
+		if [[ $(vgdisplay -c | grep VolGroup00) ]]; then
+			[[ $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]] && die "LVM logical volume ${lxc_CONTAINER_NAME}.img already exists"
+
+			lvcreate -L 1G -n ${lxc_CONTAINER_NAME}.img VolGroup00
+			mkfs.ext4 -m 1 /dev/VolGroup00/${lxc_CONTAINER_NAME}.img
+			mount /dev/VolGroup00/${lxc_CONTAINER_NAME}.img "${lxc_TMP_ROOTFS}"
+		fi
+
         #Template extraction
         log "extracting template ${lxc_TEMPLATE_ARCHIVE} ..."
         tar xzf "${lxc_TEMPLATE_ARCHIVE}" -C "${lxc_TMP_ROOTFS}" || die "tar xvzf "\""${lxc_TEMPLATE_ARCHIVE}"\"" -C "\""${lxc_TMP_ROOTFS}"\"
@@ -454,7 +464,14 @@ p_Create() {
         done
 
         #OK commit cache
-        mv "${lxc_TMP_ROOTFS}" "${lxc_CONTAINER_ROOTFS}" || die "mv ${lxc_TMP_ROOTFS} ${lxc_CONTAINER_ROOTFS} failed"
+		if [[ $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]]; then
+			umount "${lxc_TMP_ROOTFS}"
+			rm_rf "${lxc_TMP_ROOTFS}"
+			mkdir -p "${lxc_CONTAINER_ROOTFS}"
+			mount /dev/VolGroup00/${lxc_CONTAINER_NAME}.img "${lxc_CONTAINER_ROOTFS}"
+		else
+			mv "${lxc_TMP_ROOTFS}" "${lxc_CONTAINER_ROOTFS}" || die "mv ${lxc_TMP_ROOTFS} ${lxc_CONTAINER_ROOTFS} failed"
+		fi
         log "${lxc_TMP_ROOTFS} commited"
         lxc-create -n ${lxc_CONTAINER_NAME} -f ${lxc_TMP_CONFIGDIR}/config || die "Failed to create '${lxc_CONTAINER_NAME}'"
 }
