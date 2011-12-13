@@ -12,16 +12,16 @@ install:
 	install -d ${root}/etc/lxc-provider
 	cp -r etc/* ${root}/etc/lxc-provider/
 	
-	install -d ${root}/usr/libexec/lxc-provider
-	cp -r libexec/* ${root}/usr/libexec/lxc-provider/
-	find ${root}/usr/libexec/lxc-provider/ -type f -exec chmod +x {} \;
+	install -d ${root}/usr/lib/lxc-provider
+	cp -r lib/* ${root}/usr/lib/lxc-provider/
+	find ${root}/usr/lib/lxc-provider/ -type f -exec chmod +x {} \;
 	
 uninstall:
 	rm ${root}/usr/sbin/lxc-template
 	rm ${root}/usr/sbin/lxc-provider
 	rm -rf ${root}/var/cache/lxc-provider ${root}/var/tmp/lxc-provider ${root}/var/lib/lxc-provider
 #	rm -rf ${root}/etc/lxc-provider
-	rm -rf ${root}/usr/libexec/lxc-provider
+	rm -rf ${root}/usr/lib/lxc-provider
 	rm -rf ${root}/usr/share/doc/lxc-provider
 
 .PHONY: install uninstall none 

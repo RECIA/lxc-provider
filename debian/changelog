@@ -4,7 +4,7 @@ lxc-provider (0.4.1beta~recia) unstable; urgency=low
 
  -- Stéphane GAUTIER <stephane@esco-lan.org>  Tue, 13 Dec 2011 12:47:28 +0100
 
-lxc-provider (0.4.0_beta3) unstable; urgency=low
+lxc-provider (0.4.0beta3) unstable; urgency=low
 
   * Initial debian packaged release.
 
