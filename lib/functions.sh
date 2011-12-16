@@ -465,12 +465,7 @@ p_Create() {
         done
 
         #OK commit cache
-		if [[ $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]]; then
-			umount "${lxc_TMP_ROOTFS}"
-			rm_rf "${lxc_TMP_ROOTFS}"
-			mkdir -p "${lxc_CONTAINER_ROOTFS}"
-			mount /dev/VolGroup00/${lxc_CONTAINER_NAME}.img "${lxc_CONTAINER_ROOTFS}"
-		else
+		if [[ ! $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]]; then
 			mv "${lxc_TMP_ROOTFS}" "${lxc_CONTAINER_ROOTFS}" || die "mv ${lxc_TMP_ROOTFS} ${lxc_CONTAINER_ROOTFS} failed"
 		fi
         log "${lxc_TMP_ROOTFS} commited"
