@@ -7,7 +7,7 @@ then
 fi
 
 #Colors
-color_Green='\e[0;32m' 
+color_Green='\e[0;32m'
 color_Red='\e[0;31m'
 color_Yellow='\e[0;33m'
 color_Blue='\e[0;34m'
@@ -90,7 +90,7 @@ needed_var_check() {
 	needed_vars=$1
 	for var in ${needed_vars}
 	do
-		if [[ -z ${!var} ]] 
+		if [[ -z ${!var} ]]
 		then
 			die "env var $var not available"
 			needed_var_check_failed=1
@@ -191,7 +191,7 @@ c_LoadAvailable() {
         #       $1 - type (template/provider)
         #       $2 - etc_root
 	debug "c_LoadAvailable($*)"
-	
+
 	Type=$1
 	root=$2
 
@@ -204,8 +204,8 @@ c_LoadAvailable() {
 	do
                 TreeString=$(echo $File | sed "s|^$root/||g;s|/$marker||g")
                 debug "c_LoadAvailable : associating $name with $TreeString"
-	
-		if [[ "$Type" == "template" ]] 
+
+		if [[ "$Type" == "template" ]]
 		then
 			name=$(cat $File | awk -F = '$1 ~ /^lxc_TEMPLATE_NAME/ { print $2 }')
 			TemplateTree[$name]=$TreeString
@@ -227,7 +227,7 @@ t_LoadCacheArchives() {
 	#
 	#      	$1 - cachedir
 	#	$2 - version
-        
+
 	debug "t_LoadCacheArchives($*)"
 	[[ -d $1 ]] || die "Template Cache Dir $1 does not exists"
 	for archive in $(ls -1 ${1}/*_${2}*)
@@ -236,7 +236,7 @@ t_LoadCacheArchives() {
 		TemplateCacheFile[$template]=$archive
 		debug "t_LoadCacheArchives : association of $template with $archive"
 	done
-	
+
 	return 0
 }
 
@@ -257,7 +257,7 @@ t_List() {
 	#  Function: t_List
 	#
 	#  Display template list
-	#  green already builded template 
+	#  green already builded template
 	#  none ready to build template
 
         debug "t_List($*)"
@@ -285,7 +285,7 @@ p_List() {
 	#  green available template
 	#  red non available template
 	debug "p_List($*)"
-	
+
         CacheList=${!TemplateCacheFile[@]}
         debug "available templates for provisioning : $CacheList"
 
@@ -358,7 +358,7 @@ p_LoadConf() {
                 lxc_PROVIDER_NAME=${lxc_PROVIDER_WANTED}
         fi
 
-        #Load conf for provider 
+        #Load conf for provider
         CfgParse="${lxc_PATH_LIBEXEC}/cfg_parse.sh ${lxc_PATH_ETC}/provisioning ${ProviderTree[$lxc_PROVIDER_NAME]}"
         debug "launching ${CfgParse}"
         envfile=$(${CfgParse})
@@ -422,7 +422,7 @@ p_Create() {
         #  Function: p_Create
 	#
 	#  provider execution
-	debug "p_Create($*)"	
+	debug "p_Create($*)"
 	[[ -n $lxc_DEBUG ]] && c_DebugInfo
 
         #do some checks
@@ -442,7 +442,7 @@ p_Create() {
 
 		# create LV then mount it
 		if [[ $(vgdisplay -c | grep VolGroup00) ]]; then
-			[[ $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]] && die "LVM logical volume ${lxc_CONTAINER_NAME}.img already exists"
+			[[ $(lvdisplay -c | grep /dev/VolGroup00/${lxc_CONTAINER_NAME}.img) ]] && die "LVM logical volume ${lxc_CONTAINER_NAME}.img already exists"
 
 			lvcreate -L 1G -n ${lxc_CONTAINER_NAME}.img VolGroup00
 			sleep 1
@@ -465,7 +465,7 @@ p_Create() {
         done
 
         #OK commit cache
-		if [[ ! $(lvdisplay -c | grep ${lxc_CONTAINER_NAME}.img) ]]; then
+		if [[ ! $(lvdisplay -c | grep /dev/VolGroup00/${lxc_CONTAINER_NAME}.img) ]]; then
 			mv "${lxc_TMP_ROOTFS}" "${lxc_CONTAINER_ROOTFS}" || die "mv ${lxc_TMP_ROOTFS} ${lxc_CONTAINER_ROOTFS} failed"
 		fi
         log "${lxc_TMP_ROOTFS} commited"
