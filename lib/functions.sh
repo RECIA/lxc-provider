@@ -444,14 +444,19 @@ p_Create() {
 		if [[ $(vgdisplay -c | grep VolGroup00) ]]; then
 			[[ $(lvdisplay -c | grep /dev/VolGroup00/${lxc_CONTAINER_NAME}.img) ]] && die "LVM logical volume ${lxc_CONTAINER_NAME}.img already exists"
 
-			### Vérification de l'espace libre
+			# On utilise la valeur définie par la variable lxc_PART_ROOT
+			SIZE=$lxc_PART_ROOT
+			# Sinon on utilise 1G
+			[[ -z $SIZE ]] && SIZE=1G
+
+			# Vérification de l'espace libre
 			PE_SIZE=$(vgdisplay -c VolGroup00 | awk -F ':' '{print $13}')
 			FREE_PE=$(vgdisplay -c VolGroup00 | awk -F ':' '{print $16}')
 			FREE_SIZE_G=$(($PE_SIZE * $FREE_PE / 1024 / 1024))
-			[[ $FREE_SIZE_G -lt 1 ]] && die "Pas assez d'espace libre sur le groupe de volumes VolGroup00 (1 Go requis, $FREE_SIZE_G libre)"
+			[[ $FREE_SIZE_G -lt $SIZE ]] && die "Pas assez d'espace libre sur le groupe de volumes VolGroup00 ($SIZE Go requis, $FREE_SIZE_G libre)"
 
-			lvcreate -L 1G -n ${lxc_CONTAINER_NAME}.img VolGroup00
-			sleep 1
+			lvcreate -L $SIZE -n ${lxc_CONTAINER_NAME}.img VolGroup00
+			sleep 2
 			mkfs.ext4 -m 1 /dev/VolGroup00/${lxc_CONTAINER_NAME}.img
 			mount /dev/VolGroup00/${lxc_CONTAINER_NAME}.img "${lxc_TMP_ROOTFS}"
 		fi
