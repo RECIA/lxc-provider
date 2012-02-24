@@ -1,3 +1,9 @@
+lxc-provider (0.4.1beta~recia4) unstable; urgency=low
+
+  * Support de la variable d'environnement lxc_PART_ROOT
+
+ -- Damien GOMBAULT <damien.gombault@recia.fr>  Fri, 24 Feb 2012 10:11:02 +0100
+
 lxc-provider (0.4.1beta~recia3) unstable; urgency=low
 
   * Le montage des partitions LVM se fait dans escolan-lxc-provider
